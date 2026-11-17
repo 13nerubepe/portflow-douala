@@ -26,5 +26,32 @@ services:
       echo 'Buckets crees';
       "
 
+#  base de donnees
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  #      jupyter
+  jupyter:
+    image: jupyter/pyspark-notebook:spark-3.5.0
+    ports:
+      - "8888:8888"
+      - "4040:4040"
+    environment:
+      JUPYTER_TOKEN: portflow
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./:/home/jovyan/work
+    depends_on:
+      - minio
+      - mongodb
+
+
+
 volumes:
   minio-data:
+  mongo-data:
